@@ -16,7 +16,7 @@ services:
         volumes:
           - ./:/app
         ports:
-          - "127.0.0.1:7777:80"
+          - "7777:80"
         networks:
           - web
     database:
@@ -24,7 +24,7 @@ services:
       container_name: database_docker
       image: postgres:16-alpine
       ports:
-        - "127.0.0.1:${DB_LOCAL_PORT:-5402}:5432"
+        - "${DB_LOCAL_PORT:-5402}:5432"
       volumes:
         - database_docker:/var/lib/postgresql/data
         - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
