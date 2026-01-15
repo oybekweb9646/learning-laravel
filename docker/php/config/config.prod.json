@@ -1,0 +1,42 @@
+{
+    "listeners": {
+        "*:80": {
+            "pass": "routes"
+        }
+    },
+    "routes": [
+        {
+            "match": {
+                "uri": "!/index.php"
+            },
+            "action": {
+                "share": "/app/public$uri",
+                "fallback": {
+                    "pass": "applications/laravel"
+                }
+            }
+        }
+    ],
+    "applications": {
+        "laravel": {
+            "type": "php",
+            "processes": {
+                "max": 10,
+                "spare": 2,
+                "idle_timeout": 60
+            },
+            "user": "unit",
+            "group": "unit",
+            "limits": {
+                "timeout": 60,
+                "requests": 1000
+            },
+            "root": "/app/public/",
+            "script": "index.php"
+        }
+    },
+    "access_log": {
+        "path": "/var/log/access.log",
+        "format": "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\""
+    }
+}

@@ -1,0 +1,58 @@
+FROM unit:php8.4
+
+ENV TZ=Asia/Tashkent
+
+RUN apt-get update && apt-get install -y  \
+    git \
+    libzip-dev  \
+    zlib1g-dev  \
+    zip  \
+    libxml2-dev  \
+    libpq-dev  \
+    libpng-dev  \
+    libjpeg-dev  \
+    libfreetype6-dev  \
+    libgcrypt-dev  \
+    wget  \
+    unzip \
+    procps \
+    libyaml-dev \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
+    && docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install  \
+    opcache \
+    sockets \
+    gd \
+    pdo_pgsql \
+    pgsql \
+    zip \
+    exif \
+    intl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
+COPY ./docker/php/config/config.prod.json /docker-entrypoint.d/config.json
+
+COPY ./docker/php/config/php.ini-production /usr/local/etc/php/php.ini
+
+WORKDIR /app
+
+COPY ./composer.lock ./composer.json ./
+
+RUN composer install  \
+    --no-dev \
+    --optimize-autoloader \
+    --classmap-authoritative \
+    --no-scripts \
+    --no-interaction \
+    --prefer-dist \
+    -vvv
+
+COPY --chown=unit ./ .
+COPY ./.env ./.env
+
+EXPOSE 80

@@ -1,0 +1,48 @@
+name: laravel_backend
+x-logging: &common
+  logging:
+    driver: "json-file"
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+    php:
+        <<: *common
+        build:
+            context: .
+            dockerfile: ./docker/php/php-nginx-unit.prod.docker
+        restart: unless-stopped
+        volumes:
+          - ./:/app
+        ports:
+          - "127.0.0.1:7777:80"
+        networks:
+          - web
+    database:
+      <<: *common
+      container_name: database_docker
+      image: postgres:16-alpine
+      ports:
+        - "${DB_LOCAL_PORT:-5402}:5432"
+      volumes:
+        - database_docker:/var/lib/postgresql/data
+        - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+        - ./docker/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+      environment:
+        PGUSER: ${DB_USERNAME:-oybek-db}
+        POSTGRES_DB: ${DB_DATABASE:-database-docker}
+        POSTGRES_USER: ${DB_USERNAME:-oybek-db}
+        POSTGRES_PASSWORD: ${DB_PASSWORD:-oybek-db}
+        POSTGRES_HOST_AUTH_METHOD: trust
+      restart: unless-stopped
+      networks:
+        - web
+
+volumes:
+  database_docker:
+    external: true
+networks:
+  web:
+    external: true
+
