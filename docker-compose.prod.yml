@@ -9,6 +9,7 @@ x-logging: &common
 services:
     php:
         <<: *common
+        shm_size: 256m
         build:
             context: .
             dockerfile: ./docker/php/php-nginx-unit.prod.docker

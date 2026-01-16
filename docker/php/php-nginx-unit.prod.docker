@@ -38,6 +38,10 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 COPY ./docker/php/config/config.prod.json /docker-entrypoint.d/config.json
 
 COPY ./docker/php/config/php.ini-production /usr/local/etc/php/php.ini
+COPY ./docker/php/config/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 WORKDIR /app
 
