@@ -2,6 +2,8 @@
 
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\FileController;
+use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,4 +31,24 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy']);
     });
 
+    Route::post('/files', [FileController::class, 'store']);
+    Route::get('/files/{uuid}', [FileController::class, 'download'])
+        ->name('files.download');
+
+    Route::get('/news', [NewsController::class, 'index'])
+        ->name('news.index');
+
+    Route::post('/news', [NewsController::class, 'store'])
+        ->name('news.store');
+
+    Route::get('/news/{news}', [NewsController::class, 'show'])
+        ->name('news.show');
+
+    Route::put('/news/{news}', [NewsController::class, 'update'])
+        ->name('news.update');
+
+    Route::patch('/news/{news}', [NewsController::class, 'update']);
+
+    Route::delete('/news/{news}', [NewsController::class, 'destroy'])
+        ->name('news.destroy');
 });
