@@ -42,8 +42,8 @@ services:
 
 volumes:
   database_docker:
-#    external: true
+    external: true
 networks:
   web:
-#    external: true
+    external: true
 
