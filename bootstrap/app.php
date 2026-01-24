@@ -7,7 +7,6 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Http\Middleware\HandleCors;  // <-- Qo'shing
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -26,7 +25,6 @@ return Application::configure(basePath: dirname(__DIR__))
         // $middleware->web([]);
 
         $middleware->api([
-            HandleCors::class,              // <-- CORS middleware birinchi bo'lishi kerak
             SetUpLanguageMiddleware::class,
         ]);
 
