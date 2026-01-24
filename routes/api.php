@@ -34,9 +34,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/files', [FileController::class, 'store']);
     Route::get('/files/{uuid}', [FileController::class, 'download'])
         ->name('files.download');
-
-    Route::get('/news', [NewsController::class, 'index'])
-        ->name('news.index');
+//
+//    Route::get('/news', [NewsController::class, 'index'])
+//        ->name('news.index');
 
     Route::post('/news', [NewsController::class, 'store'])
         ->name('news.store');
@@ -52,3 +52,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('/news/{news}', [NewsController::class, 'destroy'])
         ->name('news.destroy');
 });
+
+
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news.index');
+
+Route::post('/files', [FileController::class, 'store'])->name('files.store');
+Route::get('/files/{uuid}/download', [FileController::class, 'download'])->name('files.download');
+Route::get('/files/{uuid}', [FileController::class, 'show'])->name('files.show'); // Qo'shimcha

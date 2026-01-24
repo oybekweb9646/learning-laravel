@@ -7,43 +7,43 @@ x-logging: &common
       max-file: "3"
 
 services:
-    php:
-        <<: *common
-        shm_size: 256m
-        build:
-            context: .
-            dockerfile: ./docker/php/php-nginx-unit.prod.docker
-        restart: unless-stopped
-        volumes:
-          - ./:/app
-        ports:
-          - "127.0.0.1:7777:80"
-        networks:
-          - web
-    database:
-      <<: *common
-      container_name: database_docker
-      image: postgres:16-alpine
-      ports:
-        - "127.0.0.1:${DB_LOCAL_PORT:-5402}:5432"
-      volumes:
-        - database_docker:/var/lib/postgresql/data
-        - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
-        - ./docker/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
-      environment:
-        PGUSER: ${DB_USERNAME:-oybek-db}
-        POSTGRES_DB: ${DB_DATABASE:-database-docker}
-        POSTGRES_USER: ${DB_USERNAME:-oybek-db}
-        POSTGRES_PASSWORD: ${DB_PASSWORD:-oybek-db}
-        POSTGRES_HOST_AUTH_METHOD: trust
-      restart: unless-stopped
-      networks:
-        - web
+  php:
+    <<: *common
+    shm_size: 256m
+    build:
+      context: .
+      dockerfile: ./docker/php/php-nginx-unit.prod.docker
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - "127.0.0.1:7777:80"
+    networks:
+      - web
+  database:
+    <<: *common
+    container_name: database_docker
+    image: postgres:16-alpine
+    ports:
+      - "127.0.0.1:${DB_LOCAL_PORT:-5402}:5432"
+    volumes:
+      - database_docker:/var/lib/postgresql/data
+      - ./docker/postgres/postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./docker/postgres/pg_hba.conf:/etc/postgresql/pg_hba.conf
+    environment:
+      PGUSER: ${DB_USERNAME:-oybek-db}
+      POSTGRES_DB: ${DB_DATABASE:-database-docker}
+      POSTGRES_USER: ${DB_USERNAME:-oybek-db}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-oybek-db}
+      POSTGRES_HOST_AUTH_METHOD: trust
+    restart: unless-stopped
+    networks:
+      - web
 
 volumes:
   database_docker:
-    external: true
+#    external: true
 networks:
   web:
-    external: true
+#    external: true
 
