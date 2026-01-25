@@ -38,19 +38,22 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $exceptions->render(function (Throwable $e, $request) {
 
-            $statusCode = 500;
+            $statusCode = ResponseAlias::HTTP_INTERNAL_SERVER_ERROR;
 
             if ($e instanceof AuthorizationException) {
-                $statusCode = ResponseAlias::HTTP_UNAUTHORIZED;
+                $statusCode = ResponseAlias::HTTP_FORBIDDEN;
             }
+
             if ($e instanceof TokenBlacklistedException) {
                 $statusCode = ResponseAlias::HTTP_UNAUTHORIZED;
             }
+
             if ($e instanceof UnauthorizedHttpException) {
                 $statusCode = ResponseAlias::HTTP_UNAUTHORIZED;
             }
+
             if ($e instanceof RouteNotFoundException) {
-                $statusCode = ResponseAlias::HTTP_UNAUTHORIZED;
+                $statusCode = ResponseAlias::HTTP_NOT_FOUND;
             }
 
             return response()->json([
