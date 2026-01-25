@@ -1,43 +1,64 @@
 <?php
 
-
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FileController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Support\Facades\Route;
 
+/*
+|--------------------------------------------------------------------------
+| AUTH
+|--------------------------------------------------------------------------
+*/
 Route::prefix('auth')->group(function () {
 
     // 🔓 Public
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/refresh', [AuthController::class, 'refresh']);
 
-    // 🔐 Protected (JWT required)
+    // 🔐 Protected
     Route::middleware('auth:api')->group(function () {
         Route::get('/me', [AuthController::class, 'me']);
         Route::get('/logout', [AuthController::class, 'logout']);
     });
 });
 
+/*
+|--------------------------------------------------------------------------
+| PUBLIC ROUTES
+|--------------------------------------------------------------------------
+*/
+Route::get('/news', [NewsController::class, 'index'])
+    ->name('news.index');
+
+Route::get('/files/{uuid}', [FileController::class, 'show'])
+    ->name('files.show');
+
+Route::get('/files/{uuid}/download', [FileController::class, 'download'])
+    ->name('files.download');
+
+/*
+|--------------------------------------------------------------------------
+| PROTECTED ROUTES
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth:api'])->group(function () {
 
-    // Admin-only users CRUD
+    // 👮‍♂️ Admin only
     Route::middleware('role:admin')->group(function () {
-        Route::get('/users',        [UserController::class, 'index']);
-        Route::post('/users',       [UserController::class, 'store']);
+        Route::get('/users', [UserController::class, 'index']);
+        Route::post('/users', [UserController::class, 'store']);
         Route::get('/users/{user}', [UserController::class, 'show']);
         Route::put('/users/{user}', [UserController::class, 'update']);
         Route::delete('/users/{user}', [UserController::class, 'destroy']);
     });
 
-    Route::post('/files', [FileController::class, 'store']);
-    Route::get('/files/{uuid}', [FileController::class, 'download'])
-        ->name('files.download');
-//
-//    Route::get('/news', [NewsController::class, 'index'])
-//        ->name('news.index');
+    // 📁 Files
+    Route::post('/files', [FileController::class, 'store'])
+        ->name('files.store');
 
+    // 📰 News (protected CRUD)
     Route::post('/news', [NewsController::class, 'store'])
         ->name('news.store');
 
@@ -52,11 +73,3 @@ Route::middleware(['auth:api'])->group(function () {
     Route::delete('/news/{news}', [NewsController::class, 'destroy'])
         ->name('news.destroy');
 });
-
-
-Route::get('/news', [NewsController::class, 'index'])
-    ->name('news.index');
-
-Route::post('/files', [FileController::class, 'store'])->name('files.store');
-Route::get('/files/{uuid}/download', [FileController::class, 'download'])->name('files.download');
-Route::get('/files/{uuid}', [FileController::class, 'show'])->name('files.show'); // Qo'shimcha
