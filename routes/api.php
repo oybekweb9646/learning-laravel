@@ -32,6 +32,9 @@ Route::prefix('auth')->group(function () {
 Route::get('/news', [NewsController::class, 'index'])
     ->name('news.index');
 
+Route::get('/news/{news}', [NewsController::class, 'show'])
+    ->name('news.show');
+
 Route::get('/files/{uuid}', [FileController::class, 'show'])
     ->name('files.show');
 
@@ -61,9 +64,6 @@ Route::middleware(['auth:api'])->group(function () {
     // 📰 News (protected CRUD)
     Route::post('/news', [NewsController::class, 'store'])
         ->name('news.store');
-
-    Route::get('/news/{news}', [NewsController::class, 'show'])
-        ->name('news.show');
 
     Route::put('/news/{news}', [NewsController::class, 'update'])
         ->name('news.update');
