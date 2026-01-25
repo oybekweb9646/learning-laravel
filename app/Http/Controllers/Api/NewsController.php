@@ -7,6 +7,7 @@ use App\Http\Requests\StoreNewsRequest;
 use App\Http\Requests\UpdateNewsRequest;
 use App\Http\Resources\NewsResource;
 use App\Http\Resources\NewsViewResource;
+use App\Http\Resources\NewsViewWebResource;
 use App\Models\News;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -36,6 +37,11 @@ class NewsController extends Controller
     {
         $news->load('file');
         return new NewsViewResource($news);
+    }
+    public function showWeb(News $news)
+    {
+        $news->load('file');
+        return new NewsViewWebResource($news);
     }
 
     public function update(UpdateNewsRequest $request, News $news)
